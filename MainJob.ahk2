@@ -1,0 +1,75 @@
+#Include ./Utility/Common.ahk2
+
+AppExe := "Diablo IV.exe"
+UniqueID := WinExist("ahk_exe " AppExe)
+if not UniqueID {
+    OutputLog("[" AppExe "] not found")
+    ExitApp
+}
+OutputLog("[" AppExe "] found [" UniqueID "]")
+
+SetTimer LifeMonitor, 200
+
+SetTimer SendSkill, 100
+
+Return
+
+LifeMonitor()
+{
+    If not WinActive("ahk_id " UniqueID)
+    {
+        Return
+    }
+
+    ; 血池白點
+    ; if !PixelSearch(&Px, &Py, 639, 953, 639, 953, 0xCBCCCC, 3)
+    ;     return
+
+    ; 藍池白點
+    if !PixelSearch(&Px, &Py, 1336, 954, 1336, 954, 0xCDCDCB, 3)
+        return
+
+    ; 血池少1/3
+    if !PixelSearch(&Px, &Py, 611, 954, 611, 954, 0x0F0E12, 3)
+        return
+    ; 血池少1/2
+    ; if !PixelSearch(&Px, &Py, 609, 980, 609, 980, 0x181918, 3)
+    ;     return
+
+    ; color := PixelGetColor(639, 953)
+    ; OutputLog(color)
+
+    for setting in LifeSettings {
+        if setting.Fire() {
+            Send(setting.KeyChar)
+            Sleep(200)
+            break
+        }
+    }
+}
+
+SendSkill()
+{
+    If !WinActive("ahk_id " UniqueID)
+    {
+        Return
+    }
+
+    If GetKeyState("VKC0", "P") or GetKeyState("RButton", "P")
+    {
+        for setting in SkillSettings {
+            if setting.Fire() {
+                Send(setting.KeyChar)
+                break
+            }
+        }
+    }
+}
+
+
+^!z:: ; Control+Alt+Z hotkey.
+{
+    OutputLog("Z pressed")
+    OutputLog("Stopped")
+    ExitApp
+}

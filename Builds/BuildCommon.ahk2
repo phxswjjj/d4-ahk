@@ -1,0 +1,23 @@
+
+class SendKeyMapping {
+
+    __New(keyChar, intervalMs) {
+        this.KeyChar := keyChar
+        this.IntervalMs := intervalMs
+        this.NextFireTime := A_TickCount
+    }
+
+    Fire() {
+        if A_TickCount >= this.NextFireTime {
+            this.NextFireTime := A_TickCount + this.IntervalMs
+            return true
+        } else {
+            return false
+        }
+    }
+}
+
+LifeSettings := Array()
+SkillSettings := Array()
+
+LifeSettings.Push(SendKeyMapping("q", 3000))

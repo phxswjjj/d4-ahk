@@ -1,0 +1,7 @@
+
+
+OutputLog(msg)
+{
+    timeStr := FormatTime(, "hh:mm:ss")
+    OutputDebug("[" timeStr "] " msg "`n")
+}

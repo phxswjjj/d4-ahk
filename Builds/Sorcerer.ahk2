@@ -1,0 +1,3 @@
+#Include BuildCommon.ahk2
+
+#Include ../MainJob.ahk2
