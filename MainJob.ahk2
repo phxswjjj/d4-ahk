@@ -18,6 +18,7 @@ LifeMonitor()
 {
     If not WinActive("ahk_id " UniqueID)
     {
+        ToolTip()
         Return
     }
 
@@ -26,8 +27,23 @@ LifeMonitor()
     ;     return
 
     ; 藍池白點
-    if !PixelSearch(&Px, &Py, 1336, 954, 1336, 954, 0xCDCDCB, 3)
+    if !PixelSearch(&Px, &Py, 1336, 954, 1336, 954, 0xCDCDCB, 3) {
+        ToolTip()
         return
+    }
+
+    ; MANA
+    if PixelSearch(&Px, &Py, 1310, 986, 1310, 986, 0x1D1F21, 3)
+        ToolTip()
+    else if PixelSearch(&Px, &Py, 1310, 986, 1310, 986, 0x0F1316, 3)
+        ToolTip()
+    else if PixelSearch(&Px, &Py, 1295, 933, 1295, 933, 0x0F1316, 3)
+        ToolTip("●●●○○", 900, 430)
+    else
+        ToolTip("●●●●●", 900, 430)
+
+    ; color := PixelGetColor(1295, 933)
+    ; OutputLog(color)
 
     ; 血池少1/3
     if !PixelSearch(&Px, &Py, 611, 954, 611, 954, 0x0F0E12, 3)
