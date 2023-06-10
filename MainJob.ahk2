@@ -33,27 +33,30 @@ LifeMonitor()
     }
 
     ; MANA
-    if PixelSearch(&Px, &Py, 1310, 986, 1310, 986, 0x1D1F21, 3)
-        ToolTip()
-    else if PixelSearch(&Px, &Py, 1310, 986, 1310, 986, 0x0F1316, 3)
-        ToolTip()
-    else if PixelSearch(&Px, &Py, 1295, 933, 1295, 933, 0x0F1316, 3)
-        ToolTip("●●●○○", 900, 430)
-    else
-        ToolTip("●●●●●", 900, 430)
+    ; if PixelSearch(&Px, &Py, 1310, 986, 1310, 986, 0x1D1F21, 3)
+    ;     ToolTip()
+    ; else if PixelSearch(&Px, &Py, 1310, 986, 1310, 986, 0x0F1316, 3)
+    ;     ToolTip()
+    ; else if PixelSearch(&Px, &Py, 1295, 933, 1295, 933, 0x0F1316, 3)
+    ;     ; ToolTip("●●●○○", 900, 430)
+    ;     ToolTip()
+    ; else
+    ;     ToolTip("●●●●●", 900, 430)
 
-    ; color := PixelGetColor(1295, 933)
-    ; OutputLog(color)
+    ; 2/3血
+    ; if IsLifeColor(611, 954)
+    ;     return
+
+    ; 1/3血
+    if IsLifeColor(609, 1015)
+        return
 
     ; 血池少1/3
-    if !PixelSearch(&Px, &Py, 611, 954, 611, 954, 0x0F0E12, 3)
-        return
+    ; if !PixelSearch(&Px, &Py, 611, 954, 611, 954, 0x0F0E12, 3)
+    ;     return
     ; 血池少1/2
     ; if !PixelSearch(&Px, &Py, 609, 980, 609, 980, 0x181918, 3)
     ;     return
-
-    ; color := PixelGetColor(639, 953)
-    ; OutputLog(color)
 
     for setting in LifeSettings {
         if setting.Fire() {
@@ -80,6 +83,37 @@ SendSkill()
             }
         }
     }
+}
+
+IsLifeColor(posX, posY)
+{
+    color := PixelGetColor(posX, posY)
+    red := "0x" SubStr(color, 3, 2)
+    red := red + 0
+    green := "0x" SubStr(color, 5, 2)
+    green := green + 0
+    blue := "0x" SubStr(color, 7, 2)
+    blue := blue + 0
+    
+    ; 明顯的血
+    if red>20 and green<10 and blue<10
+        return true
+    if red>30 and green<20 and blue<20
+        return true
+    if red>60 and green<25 and blue<25
+        return true
+
+    ; 中毒
+    if red>100 and green<40 and blue<15
+        return true
+
+    ; 偏灰
+    if red>20 and green>20 and blue>20
+        return false
+
+    ; 無法判斷，偵測
+    OutputDebug("red: " red ", green: " green ", blue: " blue "`n")
+    return red > 20
 }
 
 
