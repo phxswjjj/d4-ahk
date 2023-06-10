@@ -1,0 +1,7 @@
+#Include BuildCommon.ahk2
+
+SkillSettings.Push(SendKeyMapping("1", 5000))
+SkillSettings.Push(SendKeyMapping("3", 5000))
+SkillSettings.Push(SendKeyMapping("4", 5000))
+
+#Include ../MainJob.ahk2
