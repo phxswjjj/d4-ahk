@@ -33,22 +33,27 @@ LifeMonitor()
     }
 
     ; MANA
-    ; if PixelSearch(&Px, &Py, 1310, 986, 1310, 986, 0x1D1F21, 3)
-    ;     ToolTip()
-    ; else if PixelSearch(&Px, &Py, 1310, 986, 1310, 986, 0x0F1316, 3)
-    ;     ToolTip()
-    ; else if PixelSearch(&Px, &Py, 1295, 933, 1295, 933, 0x0F1316, 3)
-    ;     ; ToolTip("●●●○○", 900, 430)
-    ;     ToolTip()
-    ; else
-    ;     ToolTip("●●●●●", 900, 430)
+    if AppConfigSetting.EnableManaTip {
+        if PixelSearch(&Px, &Py, 1310, 986, 1310, 986, 0x1D1F21, 3)
+            ToolTip()
+        else if PixelSearch(&Px, &Py, 1310, 986, 1310, 986, 0x0F1316, 3)
+            ToolTip()
+        else if PixelSearch(&Px, &Py, 1295, 933, 1295, 933, 0x0F1316, 3)
+            ; ToolTip("●●●○○", 900, 430)
+            ToolTip()
+        else
+            ToolTip("●●●●●", 900, 430)
+    }
 
     ; 2/3血
     ; if IsLifeColor(611, 954)
     ;     return
 
     ; 1/3血
-    if IsLifeColor(609, 1015)
+    ; if IsLifeColor(609, 1015)
+    ;     return
+    ; 1/2血
+    if IsLifeColor(609, 990)
         return
 
     ; 血池少1/3
@@ -76,6 +81,11 @@ SendSkill()
 
     If GetKeyState("VKC0", "P") or GetKeyState("RButton", "P")
     {
+        ; 藍池白點
+        if !PixelSearch(&Px, &Py, 1336, 954, 1336, 954, 0xCDCDCB, 3) {
+            return
+        }
+
         for setting in SkillSettings {
             if setting.Fire() {
                 Send(setting.KeyChar)
@@ -94,13 +104,22 @@ IsLifeColor(posX, posY)
     green := green + 0
     blue := "0x" SubStr(color, 7, 2)
     blue := blue + 0
+
+    ; 其他視窗
+    if red=7 and green=6 and blue=8
+        return true
     
     ; 明顯的血
-    if red>20 and green<10 and blue<10
+    if red-green>20 and red-blue>20
+        return true
+    if red>20 and green<10 and blue<15
         return true
     if red>30 and green<20 and blue<20
         return true
     if red>60 and green<25 and blue<25
+        return true
+    ; 護盾/易傷+血
+    if Between(red, 29, 111) and Between(green, 4, 28) and Between(blue, 11, 81)
         return true
 
     ; 中毒
@@ -108,11 +127,14 @@ IsLifeColor(posX, posY)
         return true
 
     ; 偏灰
-    if red>20 and green>20 and blue>20
+    if Between(red, 25, 62) and Between(green, 25, 66) and Between(blue, 25, 70)
+        return false
+    if Abs(red-green)>3 and Abs(red-blue)>3
         return false
 
     ; 無法判斷，偵測
-    OutputDebug("red: " red ", green: " green ", blue: " blue "`n")
+    OutputDebug("red: " red ", green: " green ", blue: " blue
+        ", hex: " SubStr(color, 3, 6) "`n")
     return red > 20
 }
 

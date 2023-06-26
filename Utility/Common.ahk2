@@ -5,3 +5,11 @@ OutputLog(msg)
     timeStr := FormatTime(, "hh:mm:ss")
     OutputDebug("[" timeStr "] " msg "`n")
 }
+
+Between(var, min, max)
+{
+    if var>=min  and var<=max
+        return true
+    else
+        return false
+}

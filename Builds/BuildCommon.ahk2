@@ -17,7 +17,14 @@ class SendKeyMapping {
     }
 }
 
+class AppConfig {
+    __New() {
+        this.EnableManaTip := false
+    }
+}
+
 LifeSettings := Array()
 SkillSettings := Array()
+AppConfigSetting := AppConfig()
 
 LifeSettings.Push(SendKeyMapping("q", 3000))
