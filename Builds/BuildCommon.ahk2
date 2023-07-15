@@ -1,13 +1,18 @@
 
 class SendKeyMapping {
 
-    __New(keyChar, intervalMs) {
+    __New(keyChar, intervalMs, isOnlyRButton := false) {
         this.KeyChar := keyChar
         this.IntervalMs := intervalMs
         this.NextFireTime := A_TickCount
+        this.IsOnlyRButton := isOnlyRButton
     }
 
-    Fire() {
+    Fire(isRButtonPress := true) {
+        ; only right mouse button
+        if this.IsOnlyRButton and not isRButtonPress
+            return false
+
         if A_TickCount >= this.NextFireTime {
             this.NextFireTime := A_TickCount + this.IntervalMs
             return true
@@ -27,4 +32,4 @@ LifeSettings := Array()
 SkillSettings := Array()
 AppConfigSetting := AppConfig()
 
-LifeSettings.Push(SendKeyMapping("q", 3000))
+LifeSettings.Push(SendKeyMapping("q", 2000))

@@ -27,7 +27,7 @@ LifeMonitor()
     ;     return
 
     ; 藍池白點
-    if !PixelSearch(&Px, &Py, 1336, 954, 1336, 954, 0xCDCDCB, 3) {
+    if !HasManaPool() {
         ToolTip()
         return
     }
@@ -66,6 +66,7 @@ LifeMonitor()
     for setting in LifeSettings {
         if setting.Fire() {
             Send(setting.KeyChar)
+            OutputDebug("Send " setting.KeyChar "`n")
             Sleep(200)
             break
         }
@@ -79,15 +80,17 @@ SendSkill()
         Return
     }
 
-    If GetKeyState("VKC0", "P") or GetKeyState("RButton", "P")
+    isRButtonPress := GetKeyState("RButton", "P")
+
+    If isRButtonPress or GetKeyState("VKC0", "P")
     {
         ; 藍池白點
-        if !PixelSearch(&Px, &Py, 1336, 954, 1336, 954, 0xCDCDCB, 3) {
+        if !HasManaPool() {
             return
         }
 
         for setting in SkillSettings {
-            if setting.Fire() {
+            if setting.Fire(isRButtonPress) {
                 Send(setting.KeyChar)
                 break
             }
@@ -118,24 +121,38 @@ IsLifeColor(posX, posY)
         return true
     if red>60 and green<25 and blue<25
         return true
+    ; 護盾+血
+    if red>90 and green<40 and blue>80
+        return true
     ; 護盾/易傷+血
     if Between(red, 29, 111) and Between(green, 4, 28) and Between(blue, 11, 81)
         return true
-
+        
     ; 中毒
     if red>100 and green<40 and blue<15
         return true
 
     ; 偏灰
-    if Between(red, 25, 62) and Between(green, 25, 66) and Between(blue, 25, 70)
+    if Between(red, 25, 62) and Between(green, 25, 66) and Between(blue, 25, 70) {
+        OutputDebug("灰, red: " red ", green: " green ", blue: " blue
+        ", hex: " SubStr(color, 3, 6) "`n")
         return false
-    if Abs(red-green)>3 and Abs(red-blue)>3
+    }
+    ; 偏暗紅灰
+    if Between(red, 65, 91) and Between(red-green, 10, 15) and Between(red-blue, 10, 20) {
+        OutputDebug("暗紅灰, red: " red ", green: " green ", blue: " blue
+        ", hex: " SubStr(color, 3, 6) "`n")
         return false
+    }
 
     ; 無法判斷，偵測
     OutputDebug("red: " red ", green: " green ", blue: " blue
         ", hex: " SubStr(color, 3, 6) "`n")
     return red > 20
+}
+HasManaPool() {
+    ; 藍池白點
+    return PixelSearch(&Px, &Py, 1336, 954, 1336, 954, 0xCDCDCB, 6)
 }
 
 
