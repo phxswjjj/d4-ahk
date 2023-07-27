@@ -27,7 +27,7 @@ LifeMonitor()
     ;     return
 
     ; 藍池白點
-    if !HasManaPool() {
+    if !HasManaPool() or !HasLifePool() {
         ToolTip()
         return
     }
@@ -107,10 +107,6 @@ IsLifeColor(posX, posY)
     green := green + 0
     blue := "0x" SubStr(color, 7, 2)
     blue := blue + 0
-
-    ; 其他視窗
-    if red=7 and green=6 and blue=8
-        return true
     
     ; 明顯的血
     if red-green>20 and red-blue>20
@@ -153,6 +149,13 @@ IsLifeColor(posX, posY)
 HasManaPool() {
     ; 藍池白點
     return PixelSearch(&Px, &Py, 1336, 954, 1336, 954, 0xCDCDCB, 6)
+}
+HasLifePool() {
+    color := PixelGetColor(609, 990)
+    ; OutputDebug(color "`n")
+    if color == 0x030203
+        return false
+    return true
 }
 
 
