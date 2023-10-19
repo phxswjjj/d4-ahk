@@ -22,6 +22,9 @@ LifeMonitor()
         Return
     }
 
+    If (!HasLifePotion())
+        return
+
     ; 血池白點
     ; if !PixelSearch(&Px, &Py, 639, 953, 639, 953, 0xCBCCCC, 3)
     ;     return
@@ -135,7 +138,7 @@ IsLifeColor(posX, posY)
         return false
     }
     ; 偏暗紅灰
-    if Between(red, 65, 91) and Between(red-green, 10, 15) and Between(red-blue, 10, 20) {
+    if Between(red, 65, 91) and Between(red-green, 10, 15) and Between(red-blue, 10, 15) {
         OutputDebug("暗紅灰, red: " red ", green: " green ", blue: " blue
         ", hex: " SubStr(color, 3, 6) "`n")
         return false
@@ -157,7 +160,13 @@ HasLifePool() {
         return false
     return true
 }
-
+HasLifePotion() {
+    color := PixelGetColor(668, 916)
+    ; OutputDebug(color "`n")
+    if color == 0x958F74
+        return true
+    return false
+}
 
 ^!z:: ; Control+Alt+Z hotkey.
 {
